@@ -120,13 +120,13 @@ public:
                     pos.first++;
                 }
             }
-            else if (x < matrice->PositionOf(0).first) {
+            else {
                 while (pos.first != x) {
                     matrice->swapUp(pos);
                     pos.first--;
                 }
             }
-            else if (y > matrice->PositionOf(0).second) {
+            if (y > pos.second) {
                 while (pos.second != y) {
                     matrice->swapRight(pos);
                     pos.second++;
