@@ -3,8 +3,9 @@
 
 using namespace std;
 
-void shuffle(vector<int>& tab, int n, int queries) {
+void shuffle(vector<int>& tab, int queries) {
     srand(time(NULL));
+    int n = tab.size();
     for (int i = 0;i < queries;i++) {
         int x = rand() % n;
         int y = rand() % n;
@@ -17,6 +18,40 @@ void swap(int& x, int& y) {
     y = temp;
 }
 
+int findZero(vector<int> arr) {
+    for (int i = 0;i < arr.size();i++) {
+        if (arr[i] == 0)
+            return i;
+    }
+}
+
+int getInvCount(vector<int> arr)
+{
+    int n = arr.size();
+    int inv_count = 0;
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            if (arr[j] && arr[i] && arr[i] > arr[j])
+                inv_count++;
+        }
+    }
+    return inv_count;
+}
+bool isSolvable(vector<int> a) {
+    int n = (int)pow(a.size(), 0.5);
+    if (n % 2 != 0) {
+        return getInvCount(a) % 2 == 0;
+    }
+    else {
+        if ((n - findZero(a) / n) % 2 == 0)
+            return getInvCount(a) % 2 != 0;
+        else
+            return getInvCount(a) % 2 == 0;
+    }
+}
+
 class Matrice {
     int** mat;
     int size;
@@ -27,7 +62,10 @@ public:
         for (int i = 0;i < n * n;i++) {
             a[i] = i;
         }
-        shuffle(a, a.size(), GEN);
+        shuffle(a, GEN);
+        while (!isSolvable(a)) {
+            shuffle(a, GEN / 2);
+        }
         int counter = 0;
         mat = new int* [n];
         for (int i = 0;i < n;i++) {
@@ -39,7 +77,6 @@ public:
                 counter++;
             }
         }
-
     }
     int** getMat() {
         return mat;
@@ -153,4 +190,3 @@ public:
         return matrice->IsComplete();
     }
 };
-
