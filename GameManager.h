@@ -183,9 +183,9 @@ public:
     bool insideBoard(int x, int y) {
         return(x >= 0 && y >= 0 && x < taille&& y < taille);
     }
-    void display_board() {
+    /*void display_board() {
         matrice->display();
-    }
+    }*/
     bool GameOver() {
         return matrice->IsComplete();
     }
