@@ -8,34 +8,30 @@
 using namespace std;
 using namespace sf;
 
-Sprite sprite[25];
+
+
 
 
 int main() {
-	Music music;
-	Music woow;
-	music.openFromFile("sounds/Spanish Flea (Herb Albert) - Comedy Background Music (HD).ogg");
-	music.setLoop(true);
-	SoundBuffer buffer;
-	buffer.loadFromFile("sounds/Roblox Death Sound - Sound Effect (HD)-[AudioTrimmer.com].ogg");
-	Sound sound;
-	sound.setBuffer(buffer);
-	int n;
-	cout << "enter the level you want to play, levels 3,4,5" << endl;
-	cin >> n;
-	int choice;
-	cout << "type 1 for numbers \ntype 2 for photo\n";
-	cin >> choice;
-	while (!(n == 3 || n == 4 || n == 5)) {
-		cout << "invalid level, please enter again" << endl;
-		cin >> n;
-	}
-	GameMaster game(n);
+
+	//Music music;
+	//Music woow;
+	//music.openFromFile("sounds/Spanish Flea (Herb Albert) - Comedy Background Music (HD).ogg");
+	//music.setLoop(true);
+	//SoundBuffer buffer;
+	//buffer.loadFromFile("sounds/Roblox Death Sound - Sound Effect (HD)-[AudioTrimmer.com].ogg");
+	//Sound sound;
+	//sound.setBuffer(buffer);
+	//int n;
+	//int choice;
+	//cout << "type 1 for numbers \ntype 2 for photo\n";
+	//cin >> choice;
+	//GameMaster game(n);
 	RenderWindow app(VideoMode(480, 720), "TAQUIN");//RenderWindow app(VideoMode(91 * n, 91 * n), "TAQUIN");
 	app.setFramerateLimit(60);
-	int w;
-	Texture t;
-	if (choice == 1) {
+	//int w;
+	//Texture t;
+	/*if (choice == 1) {
 		t.loadFromFile("images/numbers.png");
 		w = 480/n;
 		int w2 = 91;
@@ -73,11 +69,11 @@ int main() {
 		cout << sprite[1].getLocalBounds().height;
 	}
 	
-	//
-	music.play();
-	chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	*/
+	//music.play();
+	//chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 	while (app.isOpen()) {
-		Event e;
+		/*Event e;
 		while (app.pollEvent(e))
 		{
 			if (e.type == Event::Closed)
@@ -101,20 +97,26 @@ int main() {
 				sprite[num].setPosition(j * w,240+ i * w);
 				app.draw(sprite[num]);
 			}
+		app.display();*/
+
+		//
+		Event e;
+		display_currentState(app,e);
 		app.display();
+		//
 
 
-		if (game.GameOver()) {
+		/*if (game.GameOver()) {
 			std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
 			int elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
 			woow.openFromFile("sounds/Anime wow sound effect.ogg");
 			music.stop();
 			woow.play();
-			/*cout << "w";
+			cout << "w";
 			for (int i = 0;i < 50000;i++) cout << "o";
-			cout << "w" << endl;*/
+			cout << "w" << endl;
 			cout << "time:" << elapsed_seconds << "seconds" << endl;
 			//app.close();
-		}
+		}*/
 	}
 }
