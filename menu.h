@@ -15,6 +15,9 @@ public:
         options_state = false;
         exit_state = false;
     }
+    void switch_main_menu_state() {
+        main_menu_state = !main_menu_state;
+    }
     void switch_play_state() {
         play_state = !play_state;
         main_menu_state = !main_menu_state;
@@ -51,6 +54,7 @@ public:
     }
     void select_level(int i) {
         modes[i - 3] = true;
+
     }
     int get_level() {
         for (int i = 0;i < 3;i++) {
@@ -85,4 +89,19 @@ public:
     bool get_number_mode() {
         return number_mode;
     }
+};
+class game_over_menu {
+private:
+    bool game_over_state ;
+public:
+    game_over_menu() {
+        game_over_state = false;
+    }
+    void switch_over_state() {
+        game_over_state = !game_over_state;
+    }
+    bool get_over_state() {
+        return game_over_state;
+    }
+
 };

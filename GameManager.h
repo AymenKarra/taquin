@@ -178,7 +178,8 @@ public:
         }
     }
     bool CheckMove(int x, int y) {
-        return x == matrice->PositionOf(0).first || y == matrice->PositionOf(0).second;
+        pair<int, int> zero_pos = matrice->PositionOf(0);
+        return x == zero_pos.first || y == zero_pos.second;
     }
     bool insideBoard(int x, int y) {
         return(x >= 0 && y >= 0 && x < taille&& y < taille);
@@ -189,4 +190,8 @@ public:
     bool GameOver() {
         return matrice->IsComplete();
     }
+    pair<int, int> zero_position() { 
+        return matrice->PositionOf(0); 
+    }
 };
+
