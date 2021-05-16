@@ -5,6 +5,7 @@
 #include"GameManager.h"
 #include"display.h"
 
+
 using namespace std;
 using namespace sf;
 
@@ -13,7 +14,7 @@ using namespace sf;
 
 
 int main() {
-
+	
 	//Music music;
 	//Music woow;
 	//music.openFromFile("sounds/Spanish Flea (Herb Albert) - Comedy Background Music (HD).ogg");
@@ -99,11 +100,22 @@ int main() {
 			}
 		app.display();*/
 
-		//
 		Event e;
 		display_currentState(app,e);
+		
+		////////////////////bléda////////////////////////
+		Font font;                                     //
+		font.loadFromFile("fonts/regular_cozy.otf");   //
+		Text version;                                  //
+		version.setFont(font);                         //
+		version.setString("ALPHA BUILD 0.1.1.07");     //
+		version.setPosition(330, 2);                   //
+		version.setCharacterSize(15);                  //
+		version.setFillColor(sf::Color::Red);          //
+		app.draw(version);                             //
+		/////////////////////////////////////////////////
+
 		app.display();
-		//
 
 
 		/*if (game.GameOver()) {
