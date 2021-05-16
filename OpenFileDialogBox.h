@@ -1,3 +1,4 @@
+// source : https://stackoverflow.com/a/52617785 
 #include <iostream>
 #include <ShlObj.h>
 #include <atlbase.h>  // for CComPtr, CComHeapPtr
