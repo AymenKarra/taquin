@@ -179,7 +179,7 @@ public:
     }
     bool CheckMove(int x, int y) {
         pair<int, int> zero_pos = matrice->PositionOf(0);
-        return x == zero_pos.first || y == zero_pos.second;
+        return (x == zero_pos.first&& y!=zero_pos.second )|| (y == zero_pos.second && x!= zero_pos.first);
     }
     bool insideBoard(int x, int y) {
         return(x >= 0 && y >= 0 && x < taille&& y < taille);

@@ -70,21 +70,23 @@ public:
 };
 class options_menu {
 private:
-    bool picture_mode;
+    bool pictures_mode;
     bool number_mode;
 public:
     options_menu() {
-        picture_mode = false;
+        pictures_mode = false;
         number_mode = true;
     }
-    void switch_picture_mode() {
-        picture_mode = !picture_mode;
+    void set_picture_mode() {
+        pictures_mode = true;
+        number_mode = false;
     }
-    void switch_number_mode() {
-        number_mode = !number_mode;
+    void set_numbers_mode() {
+        number_mode = true;
+        pictures_mode = false;
     }
     bool get_picture_mode() {
-        return picture_mode;
+        return pictures_mode;
     }
     bool get_number_mode() {
         return number_mode;

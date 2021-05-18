@@ -14,7 +14,33 @@ using namespace sf;
 
 
 int main() {
-	
+	initialize_buttons();
+	initialize_background();
+	hover.loadFromFile("sounds/hover.ogg");
+	click_buffer.loadFromFile("sounds/click.ogg");
+	click.setBuffer(click_buffer);
+	menu_music.openFromFile("sounds/main music.ogg");
+	menu_music.setVolume(20);
+	play_music.openFromFile("sounds/play music.ogg");
+	victory_music.openFromFile("sounds/victory.ogg");
+	victory_music.setVolume(50);
+	game_texture.loadFromFile("images/game background.png");
+	game_background.setTexture(game_texture);
+	game_background.setScale(0.5,0.5);
+	slide_buffer.loadFromFile("sounds/slide click.ogg");
+	slide_sound.setBuffer(slide_buffer);
+	Texture intro_texture[47];
+	Sprite intro[47];
+	for (int i = 0;i <= 46;i++) {
+		intro_texture[i].loadFromFile("images/intro/intro 720_Trim_0" + to_string(i) + ".jpg");
+		intro[i].setTexture(intro_texture[i]);
+	}
+	bool intro_finished = false;
+	Music intro_music;
+	intro_music.openFromFile("sounds/intro.ogg");
+	intro_music.play();
+
+
 	//Music music;
 	//Music woow;
 	//music.openFromFile("sounds/Spanish Flea (Herb Albert) - Comedy Background Music (HD).ogg");
@@ -28,7 +54,7 @@ int main() {
 	//cout << "type 1 for numbers \ntype 2 for photo\n";
 	//cin >> choice;
 	//GameMaster game(n);
-	RenderWindow app(VideoMode(480, 720), "TAQUIN");//RenderWindow app(VideoMode(91 * n, 91 * n), "TAQUIN");
+	RenderWindow app(VideoMode(480, 720), "TAQUIN",Style::Close);//RenderWindow app(VideoMode(91 * n, 91 * n), "TAQUIN");
 	app.setFramerateLimit(60);
 	//int w;
 	//Texture t;
@@ -99,23 +125,23 @@ int main() {
 				app.draw(sprite[num]);
 			}
 		app.display();*/
-
 		Event e;
-		display_currentState(app,e);
+		if (!intro_finished) {
+			for (int i = 0;i <= 46;i++) {
+				for (int j = 0;j < 4;j++) {
+					app.draw(intro[i]);
+					app.display();
+				}
+			}
+			intro_finished = true;
+			sleep(seconds(3));
+		}
 		
-		////////////////////bléda////////////////////////
-		Font font;                                     //
-		font.loadFromFile("fonts/regular_cozy.otf");   //
-		Text version;                                  //
-		version.setFont(font);                         //
-		version.setString("ALPHA BUILD 0.1.1.07");     //
-		version.setPosition(330, 2);                   //
-		version.setCharacterSize(15);                  //
-		version.setFillColor(sf::Color::Red);          //
-		app.draw(version);                             //
-		/////////////////////////////////////////////////
-
+		display_currentState(app, e);
 		app.display();
+		
+			
+		
 
 
 		/*if (game.GameOver()) {

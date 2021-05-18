@@ -1,4 +1,3 @@
-// source : https://stackoverflow.com/a/52617785 
 #include <iostream>
 #include <ShlObj.h>
 #include <atlbase.h>  // for CComPtr, CComHeapPtr
@@ -13,6 +12,7 @@ struct ComInit
 string open_file() {
     // Initialize COM to be able to use classes like IFileOpenDialog.
     ComInit com;
+    string str;
 
     // Create an instance of IFileOpenDialog.
     CComPtr<IFileOpenDialog> pFolderDlg;
@@ -30,10 +30,11 @@ string open_file() {
 
         wstring ws(pPath);
         // your new String
-        string str(ws.begin(), ws.end());
+        str=string(ws.begin(), ws.end());
 
         return str;
     }
+    return str;
     // Else dialog has been canceled. 
 
     // The destructor of ComInit calls CoUninitialize() here after all
