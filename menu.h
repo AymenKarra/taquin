@@ -8,12 +8,18 @@ public:
     bool play_state;
     bool options_state;
     bool exit_state;
+    bool running_state;
 public:
     main_menu() {
         main_menu_state = true;
         play_state = false;
         options_state = false;
         exit_state = false;
+        running_state = false;
+    }
+    void swith_runnig_state() {
+        running_state = !running_state;
+        play_state=!play_state;
     }
     void switch_main_menu_state() {
         main_menu_state = !main_menu_state;

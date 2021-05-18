@@ -1,150 +1,24 @@
-#include<bits/stdc++.h>
-#define GEN 100
+#include"matrice.h"
 
 using namespace std;
-
-void shuffle(vector<int>& tab, int queries) {
-    srand(time(NULL));
-    int n = tab.size();
-    for (int i = 0;i < queries;i++) {
-        int x = rand() % n;
-        int y = rand() % n;
-        swap(tab[x], tab[y]);
-    }
-}
-void swap(int& x, int& y) {
-    int temp = x;
-    x = y;
-    y = temp;
-}
-
-int findZero(vector<int> arr) {
-    for (int i = 0;i < arr.size();i++) {
-        if (arr[i] == 0)
-            return i;
-    }
-}
-
-int getInvCount(vector<int> arr)
-{
-    int n = arr.size();
-    int inv_count = 0;
-    for (int i = 0; i < n - 1; i++)
-    {
-        for (int j = i + 1; j < n; j++)
-        {
-            if (arr[j] && arr[i] && arr[i] > arr[j])
-                inv_count++;
-        }
-    }
-    return inv_count;
-}
-bool isSolvable(vector<int> a) {
-    int n = (int)pow(a.size(), 0.5);
-    if (n % 2 != 0) {
-        return getInvCount(a) % 2 == 0;
-    }
-    else {
-        if ((n - findZero(a) / n) % 2 == 0)
-            return getInvCount(a) % 2 != 0;
-        else
-            return getInvCount(a) % 2 == 0;
-    }
-}
-
-class Matrice {
-    int** mat;
-    int size;
-public:
-    Matrice(int n) {
-        size = n;
-        vector<int> a(n * n);
-        for (int i = 0;i < n * n;i++) {
-            a[i] = i;
-        }
-        shuffle(a, GEN);
-        while (!isSolvable(a)) {
-            shuffle(a, GEN / 2);
-        }
-        int counter = 0;
-        mat = new int* [n];
-        for (int i = 0;i < n;i++) {
-            mat[i] = new int[n];
-        }
-        for (int i = 0;i < n;i++) {
-            for (int j = 0;j < n;j++) {
-                mat[i][j] = a[counter];
-                counter++;
-            }
-        }
-    }
-    int** getMat() {
-        return mat;
-    }
-    void display() {
-        for (int i = 0;i < size;i++) {
-            cout << "---------------\n";
-            for (int j = 0;j < size;j++) {
-                if (mat[i][j] / 10 != 0)
-                    cout << mat[i][j] << "|";
-                else
-                    cout << mat[i][j] << " |";
-            }
-
-            cout << "\n";
-        }
-        cout << "---------------\n";
-    }
-    bool IsComplete() {
-        bool test = true;
-        int counter = 1;
-        for (int i = 0;i < size;i++)
-            for (int j = 0;j < size;j++) {
-                if (mat[i][j] != counter) {
-                    test = false;
-                    break;
-                }
-                counter = (counter + 1) % (size * size);
-            }
-        return test;
-    }
-    pair<int, int> PositionOf(int x) {
-        pair<int, int> pos;
-        for (int i = 0; i < size;i++) {
-            for (int j = 0;j < size;j++) {
-                if (mat[i][j] == x) {
-                    pos.first = i;
-                    pos.second = j;
-                    return pos;
-                    break;
-                }
-            }
-        }
-    }
-    void swapRight(pair<int, int> pos) {
-        swap(mat[pos.first][pos.second], mat[pos.first][pos.second + 1]);
-    }
-    void swapLeft(pair<int, int> pos) {
-        swap(mat[pos.first][pos.second], mat[pos.first][pos.second - 1]);
-    }
-    void swapUp(pair<int, int> pos) {
-        swap(mat[pos.first][pos.second], mat[pos.first - 1][pos.second]);
-    }
-    void swapDown(pair<int, int> pos) {
-        swap(mat[pos.first][pos.second], mat[pos.first + 1][pos.second]);
-    }
-
-};
 
 class GameMaster {
 private:
     Matrice* matrice;
     int taille;
+    Matrice** closedList;
+    int closedListLength;
 public:
     GameMaster(int n) : taille(n) {
         matrice = new Matrice(n);
+        closedList = new Matrice * [10000];
+        closedListLength = 0;
     }
-    int getItem(int x,int y) {
+    ~GameMaster() {
+        delete matrice;
+        delete[] closedList;
+    }
+    int getItem(int x, int y) {
         return matrice->getMat()[x][y];
     }
     void move(int x, int y) {
@@ -179,10 +53,136 @@ public:
     }
     bool CheckMove(int x, int y) {
         pair<int, int> zero_pos = matrice->PositionOf(0);
-        return (x == zero_pos.first&& y!=zero_pos.second )|| (y == zero_pos.second && x!= zero_pos.first);
+        return (x == zero_pos.first && y != zero_pos.second) || (y == zero_pos.second && x != zero_pos.first);
     }
     bool insideBoard(int x, int y) {
         return(x >= 0 && y >= 0 && x < taille&& y < taille);
+    }
+    //SOLVE ALGORITHM:
+    int getNextNodesScore(Matrice m, Matrice**& closedList, int n) {
+        int min0 = 10005;
+        vector<pair<int, int> > nextNodes = NextNodes(m);
+        for (int i = 0;i < nextNodes.size();i++) {
+            Matrice temp = m;
+            pair<int, int> pos = temp.PositionOf(0);
+            if (nextNodes[i].first > pos.first) {
+                while (pos.first != nextNodes[i].first) {
+                    temp.swapDown(pos);
+                    pos.first++;
+                }
+            }
+            else {
+                while (pos.first != nextNodes[i].first) {
+                    temp.swapUp(pos);
+                    pos.first--;
+                }
+            }
+            if (nextNodes[i].second > pos.second) {
+                while (pos.second != nextNodes[i].second) {
+                    temp.swapRight(pos);
+                    pos.second++;
+                }
+            }
+            else {
+                while (pos.second != nextNodes[i].second)
+                {
+                    temp.swapLeft(pos);
+                    pos.second--;
+                }
+            }
+            bool test = false;
+            for (int z = 0;z < n;z++) {
+                if (temp == *closedList[z]) test = true;
+            }
+            if (test) continue;
+            if (temp.IsComplete()) return 0;
+            int value = getDistanceScore(temp) + getMisplacedTilesScore(temp.getMat(), taille) + TileReversalPenalty(temp.getMat(), taille);
+            if (value < min0) min0 = value;
+        }
+        return min0;
+    }
+    void ResetClosedList() {
+        if (closedListLength != 0) {
+            delete[] closedList;
+            closedList = new Matrice * [10000];
+            closedListLength = 0;
+        }
+    }
+    pair<int, int> aStar(Matrice m, Matrice**& closedList, int g, int& n) {
+        int min0 = 100000;
+        pair<int, int> ans;
+        Matrice fodder(taille);
+        vector<pair<int, int> > nextNodes = NextNodes(m);
+        for (int i = 0;i < nextNodes.size();i++) {
+            Matrice temp = m;
+            pair<int, int> pos = temp.PositionOf(0);
+            if (nextNodes[i].first > pos.first) {
+                while (pos.first != nextNodes[i].first) {
+                    temp.swapDown(pos);
+                    pos.first++;
+                }
+            }
+            else {
+                while (pos.first != nextNodes[i].first) {
+                    temp.swapUp(pos);
+                    pos.first--;
+                }
+            }
+            if (nextNodes[i].second > pos.second) {
+                while (pos.second != nextNodes[i].second) {
+                    temp.swapRight(pos);
+                    pos.second++;
+                }
+            }
+            else {
+                while (pos.second != nextNodes[i].second)
+                {
+                    temp.swapLeft(pos);
+                    pos.second--;
+                }
+            }
+            bool test = false;
+            for (int z = 0;z < n;z++) {
+                if (temp == *closedList[z]) test = true;
+            }
+            if (test) continue;
+            int value = (getDistanceScore(temp) + getMisplacedTilesScore(temp.getMat(), taille) + TileReversalPenalty(temp.getMat(), taille) + getNextNodesScore(temp, closedList, n) + temp.NRowIsComplete(0, 15) ) + g;
+            if (taille == 4) value += temp.NRowIsComplete(1, 10);
+            if (taille == 5) value += temp.NRowIsComplete(2, 5)+ temp.NRowIsComplete(1, 10);
+            if (value < min0) {
+                min0 = value;
+                ans = nextNodes[i];
+                fodder = temp;
+            }
+        }
+        closedList[n] = new Matrice(fodder);
+        n++;
+        return ans;
+    }
+    void Solve() {
+        int g = 0;
+        closedList[0] = new Matrice(*matrice);
+        closedListLength++;
+        while (!GameOver()) {
+            pair<int, int> nextStep = aStar(*matrice, closedList, g, closedListLength);
+            move(nextStep.first, nextStep.second);
+            g++;
+        }
+    }
+    pair<int, int> BestNextMove() {
+        return aStar(*matrice, closedList, 0, closedListLength);
+    }
+    vector<pair<int, int> > NextNodes(Matrice m) {
+        vector<pair<int, int> > nodes;
+        for (int i = 0;i < taille;i++) {
+            for (int j = 0;j < taille;j++) {
+                if (m.getMat()[i][j] == 0) continue;
+                if (m.CheckMove(i, j)) {
+                    nodes.push_back(make_pair(i, j));
+                }
+            }
+        }
+        return nodes;
     }
     /*void display_board() {
         matrice->display();
@@ -190,8 +190,9 @@ public:
     bool GameOver() {
         return matrice->IsComplete();
     }
-    pair<int, int> zero_position() { 
-        return matrice->PositionOf(0); 
+    pair<int, int> zero_position() {
+        return matrice->PositionOf(0);
     }
+
 };
 

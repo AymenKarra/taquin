@@ -1,5 +1,5 @@
 #include"menu.h"
-#include"button.h"
+#include"animations.h"
 #include<string.h>
 #include<chrono>
 #include"OpenFileDialogBox.h"
@@ -34,15 +34,30 @@ Texture background_texture;
 Sprite background;
 Texture logo_texture;
 Sprite logo;
+Texture game_texture;
+Sprite game_background;
+Texture option_texture;
+Sprite option_background;
+Texture victory_texture;
+Sprite victory_background;
 
 Music menu_music;
 Music play_music;
 Music victory_music;
 
-Texture game_texture;
-Sprite game_background;
-
 ToggleButton sound_button;
+
+
+
+Font font;
+Font winner_font;
+
+void initialize_font() {
+	font.loadFromFile("fonts/Thanks Autumn.ttf");
+	winner_font.loadFromFile("fonts/SF Distant Galaxy.ttf");
+}
+
+
 
 
 void initialize_background() {
@@ -53,19 +68,51 @@ void initialize_background() {
 	logo.setTexture(logo_texture);
 	logo.setScale(1.22, 1.22);
 	logo.setPosition((480 - logo.getGlobalBounds().width) / 2, 220);
+
+	game_texture.loadFromFile("images/game background.png");
+	game_background.setTexture(game_texture);
+
+	option_texture.loadFromFile("images/option background.png");
+	option_background.setTexture(option_texture);
+	option_background.setTextureRect(IntRect(option_background.getGlobalBounds().width / 2 - 240 , 0, 480, 720));
+
+	victory_texture.loadFromFile("images/over background.png");
+	victory_background.setTexture(victory_texture);
+	victory_background.setScale(0.5, 0.5);
+}
+void initialize_sounds() {
+	hover.loadFromFile("sounds/hover.ogg");
+	click_buffer.loadFromFile("sounds/click.ogg");
+	click.setBuffer(click_buffer);
+	menu_music.openFromFile("sounds/main music.ogg");
+	menu_music.setVolume(20);
+	menu_music.setLoop(true);
+	play_music.openFromFile("sounds/play music.ogg");
+	play_music.setLoop(true);
+	victory_music.openFromFile("sounds/victory.ogg");
+	victory_music.setVolume(50);
+	victory_music.setLoop(true);
+	slide_buffer.loadFromFile("sounds/slide click.ogg");
+	slide_sound.setBuffer(slide_buffer);
+	
 }
 
-
 void initialize_buttons() {
-	Sprite button_sprites[15];
+	Sprite button_sprites[30];
 	ui.loadFromFile("images/ui.png");
 	for (int i = 0;i < 12;i++) {
 		button_sprites[i].setTexture(ui);
 		button_sprites[i].setTextureRect(IntRect(0, 109 * i, 334, 109));
 	}
-	button_sprites[12].setTexture(ui);button_sprites[12].setTextureRect(IntRect(0, 109 * 12, 83, 83));
-	button_sprites[13].setTexture(ui);button_sprites[13].setTextureRect(IntRect(0, 109 * 12+83, 83, 83));
-	button_sprites[14].setTexture(ui);button_sprites[14].setTextureRect(IntRect(83, 109 * 12 , 109, 109));
+	for (int i = 12;i <= 17;i++) {
+		int j = i - 12;
+		button_sprites[i].setTexture(ui);button_sprites[i].setTextureRect(IntRect(0, 1308 + 83*j, 83, 83));
+	}
+	button_sprites[18].setTexture(ui);button_sprites[18].setTextureRect(IntRect(0, 1806, 174, 55));
+	button_sprites[19].setTexture(ui);button_sprites[19].setTextureRect(IntRect(0, 1861, 174, 55));
+	button_sprites[20].setTexture(ui);button_sprites[20].setTextureRect(IntRect(0, 1916, 334, 51));
+	button_sprites[21].setTexture(ui);button_sprites[21].setTextureRect(IntRect(0, 1967, 334, 51));
+	button_sprites[22].setTexture(ui);button_sprites[22].setTextureRect(IntRect(84, 1308, 164, 164));
 	buttons["play"]= Button(button_sprites[0], button_sprites[1],hover, 123, 415);
 	buttons["play"].setScale(0.7);
 	buttons["option"]= Button(button_sprites[2], button_sprites[3], hover, 123, 492);
@@ -76,11 +123,13 @@ void initialize_buttons() {
 	buttons["mode4"]= Button(button_sprites[8], button_sprites[9], hover, 73, 350);
 	buttons["mode5"]= Button(button_sprites[10], button_sprites[11], hover, 73, 490);
 	buttons["back"]= Button(button_sprites[12], button_sprites[13], hover, 385, 10);
-	buttons["selected"]= Button(button_sprites[14], button_sprites[14], hover, 10, 10,100+13,100+16);
-	sound_button=ToggleButton(button_sprites[0], button_sprites[1], hover, 10, 10);
-	sound_button.setScale(0.25);
-	buttons["browse"] = Button(button_sprites[0], button_sprites[1], hover, 230, 205);
-	buttons["browse"].setScale(0.25);
+	buttons["selected"]= Button(button_sprites[22], button_sprites[22], hover, 10, 10,100+13,100+16);
+	buttons["help"] = Button(button_sprites[14], button_sprites[15], hover, 10, 10);
+	sound_button=ToggleButton(button_sprites[16], button_sprites[17], hover, 100, 10);
+	buttons["browse"] = Button(button_sprites[18], button_sprites[19], hover, 230, 205);
+	buttons["browse"].setScale(0.6);
+	buttons["again"]= Button(button_sprites[20], button_sprites[21], hover,240- button_sprites[21].getGlobalBounds().width/2 , 620);
+	
 }
 
 void fillTable(int n,string path="image.jpeg") {
@@ -128,8 +177,8 @@ void display_ui(RenderWindow& app) {
 	Text score,moves;
 	score.setFont(font);
 	moves.setFont(font);
-	score.setFillColor(Color::Red);
-	moves.setFillColor(Color::Red);
+	score.setFillColor(Color::White);
+	moves.setFillColor(Color::White);
 	score.setString(to_string(elapsed_seconds) + " seconds");
 	moves.setString("moves: "+ to_string(moves_number));
 	score.setPosition(175, 100);
@@ -137,7 +186,8 @@ void display_ui(RenderWindow& app) {
 	app.draw(score);
 	app.draw(moves);
 	buttons["back"].display(app);
-	sound_button.setPosition(10, 10);sound_button.display(app);
+	sound_button.setPosition(199, 10);sound_button.display(app);
+	buttons["help"].display(app);
 	////////////////////bléda////////////////////////
 			                                       //
 	font.loadFromFile("fonts/regular_cozy.otf");   //
@@ -152,10 +202,10 @@ void display_ui(RenderWindow& app) {
 
 }
 
-void sliding_animation(RenderWindow& app, int x,int y, int w,int n) {
+void sliding(RenderWindow& app, int x,int y, int w,int n) {
 	
 	float velocity = 15;
-		cout << "animation\n";
+
 		pair<int, int> zero_pos = game->zero_position();
 		
 		
@@ -270,21 +320,21 @@ void display_playMenu(RenderWindow& app , Event& e) {
 				Vector2i pos = Mouse::getPosition(app);
 				
 				if (buttons["mode3"].inboundaries(pos)) {
-					mainMenu.play_state = false;
+					mainMenu.swith_runnig_state();
 					playMenu.select_level(3);
 					click.play();
 					menu_music.stop();
 					play_music.play();
 				}
 				if (buttons["mode4"].inboundaries(pos)) {
-					mainMenu.play_state = false;
+					mainMenu.swith_runnig_state();
 					playMenu.select_level(4);
 					click.play();
 					menu_music.stop();
 					play_music.play();
 				}
 				if (buttons["mode5"].inboundaries(pos)) {
-					mainMenu.play_state = false;
+					mainMenu.swith_runnig_state();
 					playMenu.select_level(5);
 					click.play();
 					menu_music.stop();
@@ -309,6 +359,7 @@ void display_optionsMenu(RenderWindow& app, Event& e) {
 	Button numbers(num_button, num_button, hover, 100, 100, 100, 100), photo(photo_button, photo_button, hover, 220, 100, 100, 100);
 
 	app.clear();
+	app.draw(option_background);
 	numbers.display(app);
 	photo.display(app);
 	if (optionsMenu.get_number_mode()) {
@@ -322,7 +373,7 @@ void display_optionsMenu(RenderWindow& app, Event& e) {
 	
 	
 	buttons["back"].display(app);
-	sound_button.setPosition(10,300);sound_button.display(app);
+	sound_button.setPosition(10,10);sound_button.display(app);
 
 	buttons["browse"].display(app);
 	
@@ -386,13 +437,13 @@ void runGame(RenderWindow& app ,int n , Event& e) {
 				Vector2i pos = Mouse::getPosition(app);
 				int x = pos.x / w;
 				int y = (pos.y - 240) / w;
-				cout << y << " " << x << "\n";
 				if (pos.y > 240) {
 					if (game->CheckMove(y, x)) {
 						moves_number++;
 						slide_sound.play();
-						sliding_animation(app,y,x,w,n);
+						sliding(app,y,x,w,n);
 						game->move(y, x);
+						game->ResetClosedList();
 					}
 				}
 				if (buttons["back"].inboundaries(pos)) {
@@ -416,6 +467,16 @@ void runGame(RenderWindow& app ,int n , Event& e) {
 						victory_music.setVolume(0);
 					}
 				}
+				if (buttons["help"].inboundaries(pos)) {
+					pair<int, int> next_move=game->BestNextMove();
+					int x = next_move.first;
+					int y = next_move.second;
+
+					moves_number++;
+					slide_sound.play();
+					sliding(app, x, y, w, n);
+					game->move(x, y);
+				}
 			}
 	}
 	app.clear(Color::White);
@@ -432,7 +493,7 @@ void runGame(RenderWindow& app ,int n , Event& e) {
 	if (game->GameOver()) {
 		std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
 		elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
-		cout << elapsed_seconds << endl;
+
 		gameOver.switch_over_state();
 		playMenu.reset();
 		play_music.stop();
@@ -441,21 +502,22 @@ void runGame(RenderWindow& app ,int n , Event& e) {
 	
 }
 void display_over_menu(RenderWindow& app,Event& e) {
-	Font font;
-	font.loadFromFile("fonts/Thanks Autumn.ttf");
-	Text over,again,score,moves ;
-	over.setFont(font);
-	again.setFont(font);
+
+	
+	Text win,score, moves;
+	win.setFont(winner_font);
 	score.setFont(font);
 	moves.setFont(font);
-	over.setString("Game Over");
-	again.setString("Play Again");
+	win.setString("YOU WIN");
+	win.setCharacterSize(90);
+	win.setFillColor(Color::Black);
 	moves.setString("Moves: " + to_string(moves_number));
+	moves.setFillColor(Color::Black);
 	score.setString("Time: " + to_string(elapsed_seconds));
-	over.setPosition(10, 350);
-	again.setPosition(10, 400);
-	score.setPosition(175, 100);
-	moves.setPosition(175, 150);
+	score.setFillColor(Color::Black);
+	win.setPosition(25, 230);
+	score.setPosition(175, 90);
+	moves.setPosition(175, 120);
 	Sprite photo;
 	photo.setTexture(t);
 	photo.move(0, 240);
@@ -467,24 +529,30 @@ void display_over_menu(RenderWindow& app,Event& e) {
 
 
 	app.clear();
+	app.draw(victory_background);
 	if(optionsMenu.get_picture_mode())app.draw(photo);
-	app.draw(over);
-	app.draw(again);
+	app.draw(win);
 	app.draw(score);
 	app.draw(moves);
+	buttons["again"].display(app);
+	
+	
+	banana_animation(app);
+	
 	while (app.pollEvent(e)) {
 		if (e.type == Event::Closed)
 			app.close();
 		if (e.type == Event::MouseButtonPressed) {
 			if (e.key.code == Mouse::Left) {
 				Vector2i pos = Mouse::getPosition(app);
-				if (pos.y <= 450 && pos.y >= 400) {
+				if (buttons["again"].inboundaries(pos)) {
 					mainMenu.switch_main_menu_state();
 					gameOver.switch_over_state();
 					created = false;
 				}
 			}
 		}
+
 	}
 
 }
@@ -492,12 +560,10 @@ void display_over_menu(RenderWindow& app,Event& e) {
 void display_currentState(RenderWindow& app , Event& e) {
 	if (mainMenu.get_main_state()) {
 		display_mainMenu(app,e);
-		cout << "main" << endl;
 	}
 	
 	if (mainMenu.get_play_state()) {
 		display_playMenu(app,e);
-		cout << "play\n";
 	}
 	int n = playMenu.get_level();
 	if (n) {
