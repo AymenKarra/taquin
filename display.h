@@ -134,8 +134,8 @@ void initialize_buttons() {
 	buttons["selected"]= Button(button_sprites[22], button_sprites[22], 10, 10,100+13,100+16);
 	buttons["help"] = Button(button_sprites[14], button_sprites[15],  10, 10);
 	sound_button=ToggleButton(button_sprites[16], button_sprites[17],  100, 10);
-	buttons["browse"] = Button(button_sprites[18], button_sprites[19],  160, 450);
-	buttons["browse"].setScale(0.6);
+	buttons["browse"] = Button(button_sprites[18], button_sprites[19],  160, 600);
+	buttons["browse"].setScale(0.95);
 	buttons["again"]= Button(button_sprites[20], button_sprites[21], 240- button_sprites[21].getGlobalBounds().width/2 , 620);
 	buttons["again"].setSound(hover);
 	
@@ -371,11 +371,11 @@ void display_optionsMenu(RenderWindow& app, Event& e) {
 	photo2.setTexture(photo_texture2);
 	photo3.setTexture(photo_texture3);
 	custom_photo.setTexture(custom_texture);
-	Button numbers(num_button, num_button, 100, 100, 100, 100); 
-	Button photo_button1(photo1, photo1, 220, 100, 100, 100);
-	Button photo_button2(photo2, photo2, 100, 220, 100, 100);
-	Button photo_button3(photo3, photo3, 220, 220, 100, 100);
-	Button custom_photo_button(custom_photo, custom_photo, 160, 340, 100, 100);
+	Button numbers(num_button, num_button, 120, 120, 100, 100); 
+	Button photo_button1(photo1, photo1, 260, 120, 100, 100);
+	Button photo_button2(photo2, photo2, 120, 260, 100, 100);
+	Button photo_button3(photo3, photo3, 260, 260, 100, 100);
+	Button custom_photo_button(custom_photo, custom_photo, 190,485, 100, 100);
 
 	app.clear();
 	app.draw(option_background);
@@ -385,7 +385,7 @@ void display_optionsMenu(RenderWindow& app, Event& e) {
 	photo_button3.display(app);
 	custom_photo_button.display(app);
 	if (optionsMenu.get_number_mode()) {
-		buttons["selected"].setPosition(100-7, 100-8);
+		buttons["selected"].setPosition(120-7, 120-8);
 		buttons["selected"].display(app);
 	}
 	if (optionsMenu.get_picture_mode()) {
@@ -412,32 +412,35 @@ void display_optionsMenu(RenderWindow& app, Event& e) {
 				if (photo_button1.inboundaries(pos)) {
 					optionsMenu.set_picture_mode();
 					path = path1;
-					buttons["selected"].setPosition(220 - 7, 100 - 8);
+					buttons["selected"].setPosition(260 - 7, 120 - 8);
 					click.play();
 				}
 				if (photo_button2.inboundaries(pos)) {
 					optionsMenu.set_picture_mode();
 					path = path2;
-					buttons["selected"].setPosition(100 - 7, 220 - 8);
+					buttons["selected"].setPosition(120 - 7, 260 - 8);
 					click.play();
 				}
 				if (photo_button3.inboundaries(pos)) {
 					optionsMenu.set_picture_mode();
 					path = path3;
-					buttons["selected"].setPosition(220 - 7, 220 - 8);
+					buttons["selected"].setPosition(260 - 7, 260 - 8);
 					click.play();
 				}
 				if (custom_photo_button.inboundaries(pos)) {
 					optionsMenu.set_picture_mode();
 					path = custom_path;
-					buttons["selected"].setPosition(160 - 7, 340 - 8);
+					buttons["selected"].setPosition(190 - 7, 485 - 8);
 					click.play();
 				}
 
 				if (buttons["browse"].inboundaries(pos)) {
 					click.play();
 					string str = open_file();
-					if (str.length() > 0) custom_path=str;
+					if (str.length() > 0) {
+						custom_path = str;
+						path = custom_path;
+					}
 				}
 				if (buttons["back"].inboundaries(pos)) {
 					mainMenu.switch_options_state();

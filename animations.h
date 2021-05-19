@@ -57,12 +57,13 @@ protected:
 	Sprite idle, hover;
 	Sound sound;
 	pair<int, int> position,dimension;
-	bool playing = false;
+	bool playing ;
 public:
 	Button() {};
 	Button( Sprite idle, Sprite hover, int x, int y, int width=0, int height=0) {
 		this->idle = idle;
 		this->hover = hover;
+		playing = false;
 
 		this->position.first = x; this->position.second = y;
 		if (width == 0 && height == 0) {
@@ -92,10 +93,10 @@ public:
 	bool inboundaries(Vector2i pos) {
 		return((position.first <= pos.x && pos.x <= position.first + dimension.first) && (position.second <= pos.y && pos.y <= position.second + dimension.second));
 	}
-	void SoundState(bool state) {
+	/*void SoundState(bool state) {
 		if (state == false)sound.setVolume(0);
 		else sound.setVolume(100);
-	}
+	}*/
 	void setSound(SoundBuffer& buffer) {
 		sound.setBuffer(buffer);
 	}
