@@ -1,3 +1,4 @@
+#include"GameManager.h"
 #include"menu.h"
 #include"animations.h"
 #include<string.h>

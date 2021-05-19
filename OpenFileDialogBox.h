@@ -21,7 +21,7 @@ string open_file() {
     // Show the dialog modally.
     if (SUCCEEDED(pFolderDlg->Show(nullptr)))
     {
-        // Get the path of the selected folder and output it to the console.
+        // Get the path of the selected folder 
 
         CComPtr<IShellItem> pSelectedItem;
         pFolderDlg->GetResult(&pSelectedItem);
@@ -29,14 +29,14 @@ string open_file() {
         CComHeapPtr<wchar_t> pPath;
         pSelectedItem->GetDisplayName(SIGDN_FILESYSPATH, &pPath);
 
+        //change the path to string 
         wstring ws(pPath);
-        // your new String
         str=string(ws.begin(), ws.end());
 
         return str;
     }
     return str;
-    // Else dialog has been canceled. 
+
 
     // The destructor of ComInit calls CoUninitialize() here after all
     // other objects have been destroyed. 
