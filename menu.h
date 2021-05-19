@@ -3,7 +3,7 @@
 using namespace std;
 
 class main_menu {
-public:
+private:
     bool main_menu_state;
     bool play_state;
     bool options_state;
@@ -17,7 +17,7 @@ public:
         exit_state = false;
         running_state = false;
     }
-    void swith_runnig_state() {
+    void switch_runnig_state() {
         running_state = !running_state;
         play_state=!play_state;
     }

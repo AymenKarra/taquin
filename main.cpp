@@ -28,9 +28,10 @@ int main() {
 	app.setFramerateLimit(60);
 	
 	while (app.isOpen()) {
-		intro_animation(app);
+		//intro_animation(app);
 		Event e;
 		display_currentState(app, e);
+		display_version(app);
 		app.display();
 	}
 }

@@ -16,15 +16,21 @@ string open_file() {
     string str;
 
     // Create an instance of IFileOpenDialog.
-    CComPtr<IFileOpenDialog> pFolderDlg;
-    pFolderDlg.CoCreateInstance(CLSID_FileOpenDialog);
+    CComPtr<IFileOpenDialog> pDlg;
+    pDlg.CoCreateInstance(CLSID_FileOpenDialog);
+    COMDLG_FILTERSPEC aFileTypes[] = {
+    { L"photo", L"*.jpg;*.jpeg;*.bmp;*.png;*.gif;*.tiff;*.psd" }
+    };
+
+    pDlg->SetFileTypes(_countof(aFileTypes), aFileTypes);
+    pDlg->SetTitle(L"A Single-Selection Dialog");
     // Show the dialog modally.
-    if (SUCCEEDED(pFolderDlg->Show(nullptr)))
+    if (SUCCEEDED(pDlg->Show(nullptr)))
     {
         // Get the path of the selected folder 
 
         CComPtr<IShellItem> pSelectedItem;
-        pFolderDlg->GetResult(&pSelectedItem);
+        pDlg->GetResult(&pSelectedItem);
 
         CComHeapPtr<wchar_t> pPath;
         pSelectedItem->GetDisplayName(SIGDN_FILESYSPATH, &pPath);

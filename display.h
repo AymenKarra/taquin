@@ -19,7 +19,7 @@ GameMaster* game;
 bool created = false;
 chrono::time_point<std::chrono::system_clock> start;
 int elapsed_seconds;
-string path="images/image.jpeg";
+string path="images/image.jpeg",custom_path= "images/image.jpeg";
 int moves_number;
 SoundBuffer hover;
 SoundBuffer click_buffer;
@@ -114,26 +114,34 @@ void initialize_buttons() {
 	button_sprites[20].setTexture(ui);button_sprites[20].setTextureRect(IntRect(0, 1916, 334, 51));
 	button_sprites[21].setTexture(ui);button_sprites[21].setTextureRect(IntRect(0, 1967, 334, 51));
 	button_sprites[22].setTexture(ui);button_sprites[22].setTextureRect(IntRect(84, 1308, 164, 164));
-	buttons["play"]= Button(button_sprites[0], button_sprites[1],hover, 123, 415);
+	buttons["play"]= Button(button_sprites[0], button_sprites[1], 123, 415);
+	buttons["play"].setSound(hover);
 	buttons["play"].setScale(0.7);
-	buttons["option"]= Button(button_sprites[2], button_sprites[3], hover, 123, 492);
+	buttons["option"]= Button(button_sprites[2], button_sprites[3], 123, 492);
+	buttons["option"].setSound(hover);
 	buttons["option"].setScale(0.7);
-	buttons["quit"]= Button(button_sprites[4], button_sprites[5], hover, 123, 569);
+	buttons["quit"]= Button(button_sprites[4], button_sprites[5], 123, 569);
+	buttons["quit"].setSound(hover);
 	buttons["quit"].setScale(0.7);
-	buttons["mode3"]= Button(button_sprites[6], button_sprites[7], hover, 73, 210);
-	buttons["mode4"]= Button(button_sprites[8], button_sprites[9], hover, 73, 350);
-	buttons["mode5"]= Button(button_sprites[10], button_sprites[11], hover, 73, 490);
-	buttons["back"]= Button(button_sprites[12], button_sprites[13], hover, 385, 10);
-	buttons["selected"]= Button(button_sprites[22], button_sprites[22], hover, 10, 10,100+13,100+16);
-	buttons["help"] = Button(button_sprites[14], button_sprites[15], hover, 10, 10);
-	sound_button=ToggleButton(button_sprites[16], button_sprites[17], hover, 100, 10);
-	buttons["browse"] = Button(button_sprites[18], button_sprites[19], hover, 218, 205);
+	buttons["mode3"]= Button(button_sprites[6], button_sprites[7], 73, 210);
+	buttons["mode3"].setSound(hover);
+	buttons["mode4"]= Button(button_sprites[8], button_sprites[9], 73, 350);
+	buttons["mode4"].setSound(hover);
+	buttons["mode5"]= Button(button_sprites[10], button_sprites[11], 73, 490);
+	buttons["mode5"].setSound(hover);
+	buttons["back"]= Button(button_sprites[12], button_sprites[13], 385, 10);
+	buttons["back"].setSound(hover);
+	buttons["selected"]= Button(button_sprites[22], button_sprites[22], 10, 10,100+13,100+16);
+	buttons["help"] = Button(button_sprites[14], button_sprites[15],  10, 10);
+	sound_button=ToggleButton(button_sprites[16], button_sprites[17],  100, 10);
+	buttons["browse"] = Button(button_sprites[18], button_sprites[19],  160, 450);
 	buttons["browse"].setScale(0.6);
-	buttons["again"]= Button(button_sprites[20], button_sprites[21], hover,240- button_sprites[21].getGlobalBounds().width/2 , 620);
+	buttons["again"]= Button(button_sprites[20], button_sprites[21], 240- button_sprites[21].getGlobalBounds().width/2 , 620);
+	buttons["again"].setSound(hover);
 	
 }
 
-void fillTable(int n,string path="image.jpeg") {
+void fillTable(int n) {
 	int w = 480 / n;
 	if (optionsMenu.get_number_mode()) {
 		int w2 = 91;
@@ -168,13 +176,22 @@ void fillTable(int n,string path="image.jpeg") {
 		}
 	}
 }
+void display_version(RenderWindow& app ,String ver= "ALPHA BUILD 0.1.1.07") {
+	Font version_font;		                                      
+	version_font.loadFromFile("fonts/regular_cozy.otf");  
+	Text version;                                 
+	version.setFont(version_font);                        
+	version.setString(ver);    
+	version.setPosition(330, 2);                  
+	version.setCharacterSize(15);                  
+	version.setFillColor(sf::Color::Red);          
+	app.draw(version);
+}
 
 void display_ui(RenderWindow& app) {
 	app.draw(game_background);
 	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
 	elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
-	Font font;
-	font.loadFromFile("fonts/Thanks Autumn.ttf");
 	Text score,moves;
 	score.setFont(font);
 	moves.setFont(font);
@@ -189,17 +206,7 @@ void display_ui(RenderWindow& app) {
 	buttons["back"].display(app);
 	sound_button.setPosition(199, 10);sound_button.display(app);
 	buttons["help"].display(app);
-	////////////////////bléda////////////////////////
-			                                       //
-	font.loadFromFile("fonts/regular_cozy.otf");   //
-	Text version;                                  //
-	version.setFont(font);                         //
-	version.setString("ALPHA BUILD 0.1.1.07");     //
-	version.setPosition(330, 2);                   //
-	version.setCharacterSize(15);                  //
-	version.setFillColor(sf::Color::Red);          //
-	app.draw(version);                             //
-	/////////////////////////////////////////////////
+	display_version(app);
 
 }
 
@@ -321,21 +328,21 @@ void display_playMenu(RenderWindow& app , Event& e) {
 				Vector2i pos = Mouse::getPosition(app);
 				
 				if (buttons["mode3"].inboundaries(pos)) {
-					mainMenu.swith_runnig_state();
+					mainMenu.switch_runnig_state();
 					playMenu.select_level(3);
 					click.play();
 					menu_music.stop();
 					play_music.play();
 				}
 				if (buttons["mode4"].inboundaries(pos)) {
-					mainMenu.swith_runnig_state();
+					mainMenu.switch_runnig_state();
 					playMenu.select_level(4);
 					click.play();
 					menu_music.stop();
 					play_music.play();
 				}
 				if (buttons["mode5"].inboundaries(pos)) {
-					mainMenu.swith_runnig_state();
+					mainMenu.switch_runnig_state();
 					playMenu.select_level(5);
 					click.play();
 					menu_music.stop();
@@ -351,24 +358,38 @@ void display_playMenu(RenderWindow& app , Event& e) {
 	
 }
 void display_optionsMenu(RenderWindow& app, Event& e) {
-	Texture num_texture,photo_texture;
+	Texture num_texture, photo_texture1, photo_texture2, photo_texture3, custom_texture;
+	string path1= "images/image.jpeg", path2= "images/image2.jpeg", path3= "images/image3.jpeg";
 	num_texture.loadFromFile("images/numbers_button.jpg");
-	photo_texture.loadFromFile(path);
-	Sprite num_button,photo_button;
+	photo_texture1.loadFromFile(path1);
+	photo_texture2.loadFromFile(path2);
+	photo_texture3.loadFromFile(path3);
+	custom_texture.loadFromFile(custom_path);
+	Sprite num_button,photo1,photo2,photo3,custom_photo;
 	num_button.setTexture(num_texture);
-	photo_button.setTexture(photo_texture);
-	Button numbers(num_button, num_button, hover, 100, 100, 100, 100), photo(photo_button, photo_button, hover, 220, 100, 100, 100);
+	photo1.setTexture(photo_texture1);
+	photo2.setTexture(photo_texture2);
+	photo3.setTexture(photo_texture3);
+	custom_photo.setTexture(custom_texture);
+	Button numbers(num_button, num_button, 100, 100, 100, 100); 
+	Button photo_button1(photo1, photo1, 220, 100, 100, 100);
+	Button photo_button2(photo2, photo2, 100, 220, 100, 100);
+	Button photo_button3(photo3, photo3, 220, 220, 100, 100);
+	Button custom_photo_button(custom_photo, custom_photo, 160, 340, 100, 100);
 
 	app.clear();
 	app.draw(option_background);
 	numbers.display(app);
-	photo.display(app);
+	photo_button1.display(app);
+	photo_button2.display(app);
+	photo_button3.display(app);
+	custom_photo_button.display(app);
 	if (optionsMenu.get_number_mode()) {
 		buttons["selected"].setPosition(100-7, 100-8);
 		buttons["selected"].display(app);
 	}
 	if (optionsMenu.get_picture_mode()) {
-		buttons["selected"].setPosition(220-7, 100-8);
+		//buttons["selected"].setPosition(220 - 7, 100 - 8);
 		buttons["selected"].display(app);
 	}
 	
@@ -386,17 +407,41 @@ void display_optionsMenu(RenderWindow& app, Event& e) {
 				Vector2i pos = Mouse::getPosition(app);
 				if (numbers.inboundaries(pos)) {
 					optionsMenu.set_numbers_mode();
+					click.play();
 				}
-				if (photo.inboundaries(pos)) {
+				if (photo_button1.inboundaries(pos)) {
 					optionsMenu.set_picture_mode();
-
+					path = path1;
+					buttons["selected"].setPosition(220 - 7, 100 - 8);
+					click.play();
 				}
+				if (photo_button2.inboundaries(pos)) {
+					optionsMenu.set_picture_mode();
+					path = path2;
+					buttons["selected"].setPosition(100 - 7, 220 - 8);
+					click.play();
+				}
+				if (photo_button3.inboundaries(pos)) {
+					optionsMenu.set_picture_mode();
+					path = path3;
+					buttons["selected"].setPosition(220 - 7, 220 - 8);
+					click.play();
+				}
+				if (custom_photo_button.inboundaries(pos)) {
+					optionsMenu.set_picture_mode();
+					path = custom_path;
+					buttons["selected"].setPosition(160 - 7, 340 - 8);
+					click.play();
+				}
+
 				if (buttons["browse"].inboundaries(pos)) {
+					click.play();
 					string str = open_file();
-					if (str.length() > 0) path = str;
+					if (str.length() > 0) custom_path=str;
 				}
 				if (buttons["back"].inboundaries(pos)) {
 					mainMenu.switch_options_state();
+					click.play();
 				}
 
 				if (sound_button.inboundaries(pos)) {
@@ -422,7 +467,7 @@ void runGame(RenderWindow& app ,int n , Event& e) {
 	int w = 480 / n;
 	if (!created) {
 		game = new GameMaster(n);
-		fillTable(n,path);
+		fillTable(n);
 		created = true;
 		start = std::chrono::system_clock::now();
 		moves_number = 0;
@@ -450,7 +495,7 @@ void runGame(RenderWindow& app ,int n , Event& e) {
 				if (buttons["back"].inboundaries(pos)) {
 					click.play();
 					created = false;
-					mainMenu.play_state = true;
+					mainMenu.switch_runnig_state();
 					playMenu.reset();
 					play_music.stop();
 					menu_music.play();
@@ -550,6 +595,7 @@ void display_over_menu(RenderWindow& app,Event& e) {
 					mainMenu.switch_main_menu_state();
 					gameOver.switch_over_state();
 					created = false;
+					click.play();
 				}
 			}
 		}
@@ -576,15 +622,5 @@ void display_currentState(RenderWindow& app , Event& e) {
 	if (mainMenu.get_options_state()) {
 		display_optionsMenu(app, e);
 	}
-	////////////////////bléda////////////////////////
-	Font font;                                     //
-	font.loadFromFile("fonts/regular_cozy.otf");   //
-	Text version;                                  //
-	version.setFont(font);                         //
-	version.setString("ALPHA BUILD 0.1.1.07");     //
-	version.setPosition(330, 2);                   //
-	version.setCharacterSize(15);                  //
-	version.setFillColor(sf::Color::Red);          //
-	app.draw(version);                             //
-	///////////////////////////////////////////////// 
+
 }

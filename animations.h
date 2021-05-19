@@ -60,10 +60,10 @@ protected:
 	bool playing = false;
 public:
 	Button() {};
-	Button( Sprite idle, Sprite hover, SoundBuffer& buffer, int x, int y, int width=0, int height=0) {
+	Button( Sprite idle, Sprite hover, int x, int y, int width=0, int height=0) {
 		this->idle = idle;
 		this->hover = hover;
-		sound.setBuffer(buffer);
+
 		this->position.first = x; this->position.second = y;
 		if (width == 0 && height == 0) {
 			this->dimension.first = this->hover.getGlobalBounds().width;
@@ -92,6 +92,13 @@ public:
 	bool inboundaries(Vector2i pos) {
 		return((position.first <= pos.x && pos.x <= position.first + dimension.first) && (position.second <= pos.y && pos.y <= position.second + dimension.second));
 	}
+	void SoundState(bool state) {
+		if (state == false)sound.setVolume(0);
+		else sound.setVolume(100);
+	}
+	void setSound(SoundBuffer& buffer) {
+		sound.setBuffer(buffer);
+	}
 	void display(RenderWindow& app) {
 		idle.setPosition(position.first, position.second);
 		hover.setPosition(position.first, position.second);
@@ -118,7 +125,7 @@ class ToggleButton :public Button {
 private:
 	bool state;
 public:
-	ToggleButton(Sprite on, Sprite off, SoundBuffer& buffer, int x, int y, int width = 0, int height = 0) :Button(on, off, buffer, x, y, width, height) {
+	ToggleButton(Sprite on, Sprite off, int x, int y, int width = 0, int height = 0) :Button(on, off, x, y, width, height) {
 		state = true;
 	};
 	ToggleButton() {};
