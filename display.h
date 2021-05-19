@@ -127,7 +127,7 @@ void initialize_buttons() {
 	buttons["selected"]= Button(button_sprites[22], button_sprites[22], hover, 10, 10,100+13,100+16);
 	buttons["help"] = Button(button_sprites[14], button_sprites[15], hover, 10, 10);
 	sound_button=ToggleButton(button_sprites[16], button_sprites[17], hover, 100, 10);
-	buttons["browse"] = Button(button_sprites[18], button_sprites[19], hover, 230, 205);
+	buttons["browse"] = Button(button_sprites[18], button_sprites[19], hover, 218, 205);
 	buttons["browse"].setScale(0.6);
 	buttons["again"]= Button(button_sprites[20], button_sprites[21], hover,240- button_sprites[21].getGlobalBounds().width/2 , 620);
 	
@@ -189,7 +189,7 @@ void display_ui(RenderWindow& app) {
 	buttons["back"].display(app);
 	sound_button.setPosition(199, 10);sound_button.display(app);
 	buttons["help"].display(app);
-	////////////////////bléda////////////////////////
+	////////////////////blÃ©da////////////////////////
 			                                       //
 	font.loadFromFile("fonts/regular_cozy.otf");   //
 	Text version;                                  //
@@ -576,7 +576,7 @@ void display_currentState(RenderWindow& app , Event& e) {
 	if (mainMenu.get_options_state()) {
 		display_optionsMenu(app, e);
 	}
-	////////////////////bléda////////////////////////
+	////////////////////blÃ©da////////////////////////
 	Font font;                                     //
 	font.loadFromFile("fonts/regular_cozy.otf");   //
 	Text version;                                  //
