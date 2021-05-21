@@ -8,7 +8,7 @@
 using namespace std;
 using namespace sf;
 
-main_menu mainMenu;
+state_manager mainMenu;
 play_menu playMenu;
 options_menu optionsMenu;
 game_over_menu gameOver;

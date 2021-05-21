@@ -2,7 +2,7 @@
 
 using namespace std;
 
-class main_menu {
+class state_manager {
 private:
     bool main_menu_state;
     bool play_state;
@@ -10,7 +10,7 @@ private:
     bool exit_state;
     bool running_state;
 public:
-    main_menu() {
+    state_manager() {
         main_menu_state = true;
         play_state = false;
         options_state = false;
