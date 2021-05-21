@@ -26,9 +26,13 @@ int main() {
 
 	RenderWindow app(VideoMode(480, 720), "TAQUIN",Style::Close);
 	app.setFramerateLimit(60);
+
+	sf::Image icon;
+	icon.loadFromFile("images/TAQUIN.ico");
+	app.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 	
 	while (app.isOpen()) {
-		//intro_animation(app);
+		intro_animation(app);
 		Event e;
 		display_currentState(app, e);
 		display_version(app);

@@ -6,7 +6,8 @@ class GameMaster {
 private:
     Matrice* matrice;
     int taille;
-    Matrice** closedList;
+    //attributes used for the algorithm solve:
+    Matrice** closedList;//used for solving algorithm, keeps track of history of generated moves: avoids repeat
     int closedListLength;
 public:
     GameMaster(int n) : taille(n) {
@@ -18,31 +19,38 @@ public:
         delete matrice;
         delete[] closedList;
     }
-    int getItem(int x, int y) {
+    int getItem(int x, int y) //returns the matrice's content at position (x,y)
+    {
         return matrice->getMat()[x][y];
     }
-    void move(int x, int y) {
+    void move(int x, int y) // moves the item at position (x,y)
+    {
         if (CheckMove(x, y)) {
-            pair<int, int> pos = matrice->PositionOf(0);
-            if (x > pos.first) {
+            pair<int, int> pos = matrice->PositionOf(0);//get the position of the empty tile
+            //moves the desired tile towards the empty tiles location depending on the direction
+            if (x > pos.first) //the blank tile is UPWARDS of the desired move
+            {
                 while (pos.first != x) {
                     matrice->swapDown(pos);
                     pos.first++;
                 }
             }
-            else {
+            else //the blank tile is DOWNWARDS of the desired move
+            {
                 while (pos.first != x) {
                     matrice->swapUp(pos);
                     pos.first--;
                 }
             }
-            if (y > pos.second) {
+            if (y > pos.second)//the blank tile is to the LEFT of the desired move
+            {
                 while (pos.second != y) {
                     matrice->swapRight(pos);
                     pos.second++;
                 }
             }
-            else {
+            else //the blank tile is to the RIGHT of the desired move
+            {
                 while (pos.second != y)
                 {
                     matrice->swapLeft(pos);
@@ -51,19 +59,22 @@ public:
             }
         }
     }
-    bool CheckMove(int x, int y) {
+    bool CheckMove(int x, int y) //checks if the blank tile is horizontally or vertically alligned with item at position (x,y)
+    {
         pair<int, int> zero_pos = matrice->PositionOf(0);
         return (x == zero_pos.first && y != zero_pos.second) || (y == zero_pos.second && x != zero_pos.first);
     }
-    bool insideBoard(int x, int y) {
+    bool insideBoard(int x, int y) // checks if the position (x,y) is within the boudaries of the matrice
+    {
         return(x >= 0 && y >= 0 && x < taille&& y < taille);
     }
     //SOLVE ALGORITHM:
-    int getNextNodesScore(Matrice m, Matrice**& closedList, int n) {
+    int getNextNodesScore(Matrice m, Matrice**& closedList, int n) //returns the minimum heuristic function for a given node (matrice state)
+    {
         int min0 = 10005;
-        vector<pair<int, int> > nextNodes = NextNodes(m);
+        vector<pair<int, int> > nextNodes = NextNodes(m);//generate next possible moves
         for (int i = 0;i < nextNodes.size();i++) {
-            Matrice temp = m;
+            Matrice temp = m;//create temporary matrice to generate the child node
             pair<int, int> pos = temp.PositionOf(0);
             if (nextNodes[i].first > pos.first) {
                 while (pos.first != nextNodes[i].first) {
@@ -92,12 +103,12 @@ public:
             }
             bool test = false;
             for (int z = 0;z < n;z++) {
-                if (temp == *closedList[z]) test = true;
+                if (temp == *closedList[z]) test = true;// checks if the node has been generated before (avoids inf loop)
             }
-            if (test) continue;
-            if (temp.IsComplete()) return 0;
-            int value = getDistanceScore(temp) + getMisplacedTilesScore(temp.getMat(), taille) + TileReversalPenalty(temp.getMat(), taille);
-            if (value < min0) min0 = value;
+            if (test) continue;// if the nodes has been generated before ignore it
+            if (temp.IsComplete()) return 0;// if the node is the solution returns 0
+            int value = getDistanceScore(temp) + getMisplacedTilesScore(temp.getMat(), taille) + TileReversalPenalty(temp.getMat(), taille);// calculate the heuristic function for the child node
+            if (value < min0) min0 = value;// keeps the minimum value of the node
         }
         return min0;
     }
@@ -108,7 +119,8 @@ public:
             closedListLength = 0;
         }
     }
-    pair<int, int> aStar(Matrice m, Matrice**& closedList, int g, int& n) {
+    pair<int, int> aStar(Matrice m, Matrice**& closedList, int g, int& n) //l'algorithme de solve 
+    {
         int min0 = 100000;
         pair<int, int> ans;
         Matrice fodder(taille);
@@ -169,7 +181,8 @@ public:
             g++;
         }
     }
-    pair<int, int> BestNextMove() {
+    pair<int, int> BestNextMove() //generate the next possible moves for a given node 
+    {
         return aStar(*matrice, closedList, 0, closedListLength);
     }
     vector<pair<int, int> > NextNodes(Matrice m) {

@@ -18,6 +18,8 @@ string open_file() {
     // Create an instance of IFileOpenDialog.
     CComPtr<IFileOpenDialog> pDlg;
     pDlg.CoCreateInstance(CLSID_FileOpenDialog);
+    
+    //select type of files to chose in the openfile dialog box
     COMDLG_FILTERSPEC aFileTypes[] = {
     { L"photo", L"*.jpg;*.jpeg;*.bmp;*.png;*.gif;*.tiff;*.psd" }
     };

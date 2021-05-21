@@ -8,7 +8,8 @@ class Matrice {
     int** mat;
     int size;
 public:
-    Matrice(int n) {
+    Matrice(int n) //create a random matrix and check if it is solvable 
+    {
         size = n;
         vector<int> a(n * n);
         for (int i = 0;i < n * n;i++) {
@@ -137,7 +138,8 @@ public:
     }
 
 };
-inline int getDistanceScore(Matrice mat) {
+inline int getDistanceScore(Matrice mat) //pour l'algorithme solve
+{
     int distanceScore = 0;
     int n = mat.getSize();
     for (int i = 0;i < n;i++) {

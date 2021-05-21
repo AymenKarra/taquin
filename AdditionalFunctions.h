@@ -2,10 +2,12 @@
 #include<vector>
 using namespace std;
 
-inline int manhattanDistance(pair<int, int> x, pair<int, int> y) {
+inline int manhattanDistance(pair<int, int> x, pair<int, int> y) //returns the manhattan distance between 2 positions
+{
     return abs(x.first - y.first) + abs(x.second - y.second);
 }
-pair<int, int> DesiredPost(int** mat, int i, int j, int taille) {
+pair<int, int> DesiredPost(int** mat, int i, int j, int taille) //returns the correct desired position for a given tile
+{
     for (int x = 0;x < taille;x++) {
         for (int y = 0;y < taille;y++) {
             if (mat[i][j] == x * taille + y + 1) {
@@ -15,14 +17,16 @@ pair<int, int> DesiredPost(int** mat, int i, int j, int taille) {
     }
 }
 
-int getMisplacedTilesScore(int** mat, int taille) {
+int getMisplacedTilesScore(int** mat, int taille) //returns a score of how many tiles are not in the right space (exp: l0=(1,2,4) has the tile 4 misplaced)
+{
     int counter = 0;
     for (int i = 0;i < taille;i++)
         for (int j = 0;j < taille;j++)
             if (mat[i][j] != (i * taille + j + 1) % (taille * taille)) counter++;
     return counter;
 }
-inline int TileReversalPenalty(int** mat, int taille) {
+inline int TileReversalPenalty(int** mat, int taille) //returns a score of how many direct inversion there is in a matrice (exp: l0=(2,1,3) has two invs 2 and 1)
+{
     int counter = 0;
     for (int i = 0;i < taille;i++) {
         for (int j = 0;j < taille - 1;j++) {
@@ -32,7 +36,8 @@ inline int TileReversalPenalty(int** mat, int taille) {
     return counter;
 }
 
-void shuffle(vector<int>& tab, int queries) {
+void shuffle(vector<int>& tab, int queries)//randomly shuffles the matrice
+{
     srand(time(NULL));
     int n = tab.size();
     for (int i = 0;i < queries;i++) {
@@ -54,7 +59,7 @@ int findZero(vector<int> arr) {
     }
 }
 
-int getInvCount(vector<int> arr)
+int getInvCount(vector<int> arr)//calculates the manhattan distance for a matrice (minus the blank tile)
 {
     int n = arr.size();
     int inv_count = 0;
@@ -68,7 +73,8 @@ int getInvCount(vector<int> arr)
     }
     return inv_count;
 }
-bool isSolvable(vector<int> a) {
+bool isSolvable(vector<int> a) // checks if a matrice is solvable
+{
     int n = (int)pow(a.size(), 0.5);
     if (n % 2 != 0) {
         return getInvCount(a) % 2 == 0;

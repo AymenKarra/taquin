@@ -8,7 +8,7 @@
 using namespace std;
 using namespace sf;
 
-state_manager mainMenu;
+state_manager StateManager;
 play_menu playMenu;
 options_menu optionsMenu;
 game_over_menu gameOver;
@@ -141,10 +141,11 @@ void initialize_buttons() {
 	
 }
 
-void fillTable(int n) {
+void fillTable(int n)//fill the table with numbers or tiles of the photo
+{
 	int w = 480 / n;
 	if (optionsMenu.get_number_mode()) {
-		int w2 = 91;
+		int w2 = 91;//the width of the original number sprite  
 		t.loadFromFile("images/numbers.png");
 		float scale = 480.0 / (91 * n);
 		for (int i = 0; i < n * n;i++) {
@@ -162,7 +163,7 @@ void fillTable(int n) {
 		int l = min(photo.getGlobalBounds().width, photo.getGlobalBounds().height);
 		float scale = 480.0 / l;
 
-		photo.setTextureRect(IntRect(0, 0, l, l));
+		photo.setTextureRect(IntRect(0, 0, l, l));//select a square of the photo
 
 		float w2 = l / n;
 		int c = 1;
@@ -188,7 +189,8 @@ void display_version(RenderWindow& app ,String ver= "ALPHA BUILD 0.1.1.07") {
 	app.draw(version);
 }
 
-void display_ui(RenderWindow& app) {
+void display_ui(RenderWindow& app)//display: score , number of moves , return button , sound on/off button , help button
+{
 	app.draw(game_background);
 	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
 	elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
@@ -210,7 +212,8 @@ void display_ui(RenderWindow& app) {
 
 }
 
-void sliding(RenderWindow& app, int x,int y, int w,int n) {
+void sliding(RenderWindow& app, int x,int y, int w,int n)//the sliding animation
+{
 	
 	float velocity = 15;
 
@@ -293,11 +296,11 @@ void display_mainMenu(RenderWindow& app, Event& e) {
 			if (e.key.code == Mouse::Left) {
 				Vector2i pos = Mouse::getPosition(app);
 				if (buttons["play"].inboundaries(pos)) {
-					mainMenu.switch_play_state();
+					StateManager.switch_play_state();
 					click.play();
 				}
 				if (buttons["option"].inboundaries(pos)) {
-					mainMenu.switch_options_state();
+					StateManager.switch_options_state();
 					click.play();
 				}
 				if (buttons["quit"].inboundaries(pos)) {
@@ -328,28 +331,28 @@ void display_playMenu(RenderWindow& app , Event& e) {
 				Vector2i pos = Mouse::getPosition(app);
 				
 				if (buttons["mode3"].inboundaries(pos)) {
-					mainMenu.switch_runnig_state();
+					StateManager.switch_runnig_state();
 					playMenu.select_level(3);
 					click.play();
 					menu_music.stop();
 					play_music.play();
 				}
 				if (buttons["mode4"].inboundaries(pos)) {
-					mainMenu.switch_runnig_state();
+					StateManager.switch_runnig_state();
 					playMenu.select_level(4);
 					click.play();
 					menu_music.stop();
 					play_music.play();
 				}
 				if (buttons["mode5"].inboundaries(pos)) {
-					mainMenu.switch_runnig_state();
+					StateManager.switch_runnig_state();
 					playMenu.select_level(5);
 					click.play();
 					menu_music.stop();
 					play_music.play();
 				}
 				if (buttons["back"].inboundaries(pos)) {
-					mainMenu.switch_play_state();
+					StateManager.switch_play_state();
 					click.play();
 
 				}
@@ -443,7 +446,7 @@ void display_optionsMenu(RenderWindow& app, Event& e) {
 					}
 				}
 				if (buttons["back"].inboundaries(pos)) {
-					mainMenu.switch_options_state();
+					StateManager.switch_options_state();
 					click.play();
 				}
 
@@ -498,7 +501,7 @@ void runGame(RenderWindow& app ,int n , Event& e) {
 				if (buttons["back"].inboundaries(pos)) {
 					click.play();
 					created = false;
-					mainMenu.switch_runnig_state();
+					StateManager.switch_runnig_state();
 					playMenu.reset();
 					play_music.stop();
 					menu_music.play();
@@ -595,7 +598,7 @@ void display_over_menu(RenderWindow& app,Event& e) {
 			if (e.key.code == Mouse::Left) {
 				Vector2i pos = Mouse::getPosition(app);
 				if (buttons["again"].inboundaries(pos)) {
-					mainMenu.switch_main_menu_state();
+					StateManager.switch_main_menu_state();
 					gameOver.switch_over_state();
 					created = false;
 					click.play();
@@ -607,12 +610,13 @@ void display_over_menu(RenderWindow& app,Event& e) {
 
 }
 
-void display_currentState(RenderWindow& app , Event& e) {
-	if (mainMenu.get_main_state()) {
+void display_currentState(RenderWindow& app , Event& e) //check which state is true and display it  
+{
+	if (StateManager.get_main_state()) {
 		display_mainMenu(app,e);
 	}
 	
-	if (mainMenu.get_play_state()) {
+	if (StateManager.get_play_state()) {
 		display_playMenu(app,e);
 	}
 	int n = playMenu.get_level();
@@ -622,7 +626,7 @@ void display_currentState(RenderWindow& app , Event& e) {
 	if (gameOver.get_over_state()) {
 		display_over_menu(app,e);
 	}
-	if (mainMenu.get_options_state()) {
+	if (StateManager.get_options_state()) {
 		display_optionsMenu(app, e);
 	}
 
